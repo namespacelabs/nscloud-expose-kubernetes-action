@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, nscloud-ubuntu-22.04-staging-amd64-2x8]
+        os: [ubuntu-22.04, nscloud-ubuntu-22.04-amd64-2x8]
     runs-on: ${{ matrix.os }}
     name: Expose a sample application from Namespace Cloud
     steps:
