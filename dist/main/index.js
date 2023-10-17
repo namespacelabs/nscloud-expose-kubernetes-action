@@ -4338,12 +4338,17 @@ var __webpack_exports__ = {};
 (() => {
 "use strict";
 __nccwpck_require__.r(__webpack_exports__);
+/* harmony export */ __nccwpck_require__.d(__webpack_exports__, {
+/* harmony export */   "tmpFile": () => (/* binding */ tmpFile)
+/* harmony export */ });
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2186);
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7147);
 /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(fs__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(1514);
-/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(_actions_exec__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(1017);
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__nccwpck_require__.n(path__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(1514);
+/* harmony import */ var _actions_exec__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__nccwpck_require__.n(_actions_exec__WEBPACK_IMPORTED_MODULE_3__);
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -4353,6 +4358,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 
@@ -4386,7 +4392,7 @@ function prepareCluster() {
             _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput("access-token", token);
             // New line to separate from groups.
             _actions_core__WEBPACK_IMPORTED_MODULE_0__.info(`
-Successfully exposed ${preview.name} (port ${preview.port}) under ${preview.url}.`);
+Successfully exposed port ${preview.port} under ${preview.url}.`);
         }
         catch (error) {
             _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(error.message);
@@ -4401,14 +4407,22 @@ function ensureNscloudToken() {
             return;
         }
         // We only need a valid token when opening the proxy
-        yield _actions_exec__WEBPACK_IMPORTED_MODULE_2__.exec("nsc auth exchange-github-token --ensure=5m");
+        yield _actions_exec__WEBPACK_IMPORTED_MODULE_3__.exec("nsc auth exchange-github-token --ensure=5m");
     });
+}
+function tmpFile(file) {
+    const tmpDir = path__WEBPACK_IMPORTED_MODULE_2__.join(process.env.RUNNER_TEMP, "ns");
+    if (!fs__WEBPACK_IMPORTED_MODULE_1__.existsSync(tmpDir)) {
+        fs__WEBPACK_IMPORTED_MODULE_1__.mkdirSync(tmpDir);
+    }
+    return path__WEBPACK_IMPORTED_MODULE_2__.join(tmpDir, file);
 }
 // Returns the access token as a string
 function generateAccessToken(id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const out = yield _actions_exec__WEBPACK_IMPORTED_MODULE_2__.getExecOutput(`nsc ingress generate-access-token --instance=${id} --log_actions=false`);
-        return out.stdout;
+        const out = tmpFile("ingress-access.txt");
+        yield _actions_exec__WEBPACK_IMPORTED_MODULE_3__.exec(`nsc ingress generate-access-token --instance=${id} --output_to=${out} --log_actions=false`);
+        return fs__WEBPACK_IMPORTED_MODULE_1__.readFileSync(out, "utf8");
     });
 }
 function exposeKubernetes(id) {
@@ -4428,7 +4442,7 @@ function exposeKubernetes(id) {
         if (ingress != "") {
             cmd = cmd + ` --ingress=${ingress}`;
         }
-        const out = yield _actions_exec__WEBPACK_IMPORTED_MODULE_2__.getExecOutput(cmd);
+        const out = yield _actions_exec__WEBPACK_IMPORTED_MODULE_3__.getExecOutput(cmd);
         return JSON.parse(out.stdout);
     });
 }

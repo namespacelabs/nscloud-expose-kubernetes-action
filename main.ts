@@ -1,5 +1,6 @@
 import * as core from "@actions/core";
 import * as fs from "fs";
+import * as path from "path";
 import * as exec from "@actions/exec";
 
 async function run(): Promise<void> {
@@ -37,7 +38,7 @@ async function prepareCluster(): Promise<void> {
 
 		// New line to separate from groups.
 		core.info(`
-Successfully exposed ${preview.name} (port ${preview.port}) under ${preview.url}.`);
+Successfully exposed port ${preview.port} under ${preview.url}.`);
 	} catch (error) {
 		core.setFailed(error.message);
 	}
@@ -54,13 +55,25 @@ async function ensureNscloudToken() {
 	await exec.exec("nsc auth exchange-github-token --ensure=5m");
 }
 
+export function tmpFile(file: string): string {
+	const tmpDir = path.join(process.env.RUNNER_TEMP, "ns");
+
+	if (!fs.existsSync(tmpDir)) {
+		fs.mkdirSync(tmpDir);
+	}
+
+	return path.join(tmpDir, file);
+}
+
 // Returns the access token as a string
 async function generateAccessToken(id: string): Promise<string> {
-	const out = await exec.getExecOutput(
-		`nsc ingress generate-access-token --instance=${id} --log_actions=false`
+	const out = tmpFile("ingress-access.txt");
+
+	await exec.exec(
+		`nsc ingress generate-access-token --instance=${id} --output_to=${out} --log_actions=false`
 	);
 
-	return out.stdout;
+	return fs.readFileSync(out, "utf8");
 }
 
 interface Preview {
