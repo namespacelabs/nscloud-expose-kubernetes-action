@@ -20,7 +20,7 @@ async function prepareCluster(): Promise<void> {
 	try {
 		const id = core.getInput("instance-id");
 
-		const preview = await core.group(`Expose Ingress`, async () => {
+		const preview = await core.group(`Expose ingress`, async () => {
 			await ensureNscloudToken();
 
 			return await exposeKubernetes(id);
@@ -28,7 +28,7 @@ async function prepareCluster(): Promise<void> {
 
 		core.setOutput("preview-url", preview.url);
 
-		const token = await core.group(`Expose Ingress`, async () => {
+		const token = await core.group(`Generate ingress access token`, async () => {
 			return await generateAccessToken(id);
 		});
 

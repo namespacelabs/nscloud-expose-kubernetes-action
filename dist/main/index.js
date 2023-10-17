@@ -4374,12 +4374,12 @@ function prepareCluster() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const id = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("instance-id");
-            const preview = yield _actions_core__WEBPACK_IMPORTED_MODULE_0__.group(`Expose Ingress`, () => __awaiter(this, void 0, void 0, function* () {
+            const preview = yield _actions_core__WEBPACK_IMPORTED_MODULE_0__.group(`Expose ingress`, () => __awaiter(this, void 0, void 0, function* () {
                 yield ensureNscloudToken();
                 return yield exposeKubernetes(id);
             }));
             _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput("preview-url", preview.url);
-            const token = yield _actions_core__WEBPACK_IMPORTED_MODULE_0__.group(`Expose Ingress`, () => __awaiter(this, void 0, void 0, function* () {
+            const token = yield _actions_core__WEBPACK_IMPORTED_MODULE_0__.group(`Generate ingress access token`, () => __awaiter(this, void 0, void 0, function* () {
                 return yield generateAccessToken(id);
             }));
             _actions_core__WEBPACK_IMPORTED_MODULE_0__.setSecret(token);
