@@ -1,0 +1,38 @@
+name: 'Expose Kubernetes Action'
+description: "Expose a Kubernetes App from Namespace"
+
+inputs:
+  instance-id:
+    description: "Identifier of the Namespace Instance."
+    required: true
+    default: ""
+  namespace:
+    description: "Namespace of the service load balancer to expose."
+    required: true
+    default: ""
+  service:
+    description: "Name of the service load balancer to expose."
+    required: true
+    default: ""
+  port:
+    description: "Which exported Load Balancer port to expose."
+    required: false
+    default: ""
+  name:
+    description: "If specified, set the name of the exposed ingress."
+    required: false
+    default: ""
+  ingress:
+    description: "Specify ingress rules. Separate each rule with `,`."
+    required: false
+    default: ""
+
+outputs:
+  preview-url:
+    description: "URL of the exposed preview."
+  access-token:
+    description: "Bearer token to access the exposed preview from HTTP."
+
+runs:
+  using: node16
+  main: dist/main/index.js
