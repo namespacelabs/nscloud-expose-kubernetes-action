@@ -4380,6 +4380,9 @@ function prepareCluster() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const id = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("instance-id");
+            if (id === "") {
+                throw new Error(`instance-id not provided`);
+            }
             const preview = yield _actions_core__WEBPACK_IMPORTED_MODULE_0__.group(`Expose ingress`, () => __awaiter(this, void 0, void 0, function* () {
                 yield ensureNscloudToken();
                 return yield exposeKubernetes(id);

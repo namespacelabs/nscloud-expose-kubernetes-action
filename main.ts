@@ -21,6 +21,10 @@ async function prepareCluster(): Promise<void> {
 	try {
 		const id = core.getInput("instance-id");
 
+		if (id === "") {
+			throw new Error(`instance-id not provided`);
+		}
+
 		const preview = await core.group(`Expose ingress`, async () => {
 			await ensureNscloudToken();
 
