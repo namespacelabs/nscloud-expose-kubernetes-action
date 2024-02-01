@@ -4,11 +4,11 @@ import * as path from "path";
 import * as exec from "@actions/exec";
 
 async function run(): Promise<void> {
-	var commandExists = require("command-exists");
+	const commandExists = require("command-exists");
 
 	commandExists("nsc")
 		.then(prepareCluster)
-		.catch(function () {
+		.catch(() => {
 			core.setFailed(`Namespace Cloud CLI not found.
 
 Please add a step this step to your workflow's job definition:
@@ -22,10 +22,10 @@ async function prepareCluster(): Promise<void> {
 		const id = core.getInput("instance-id");
 
 		if (id === "") {
-			throw new Error(`instance-id not provided`);
+			throw new Error("instance-id not provided");
 		}
 
-		const preview = await core.group(`Expose ingress`, async () => {
+		const preview = await core.group("Expose ingress", async () => {
 			await ensureNscloudToken();
 
 			return await exposeKubernetes(id);
@@ -33,7 +33,7 @@ async function prepareCluster(): Promise<void> {
 
 		core.setOutput("preview-url", preview.url);
 
-		const token = await core.group(`Generate ingress access token`, async () => {
+		const token = await core.group("Generate ingress access token", async () => {
 			return await generateAccessToken(id);
 		});
 
@@ -93,18 +93,18 @@ async function exposeKubernetes(id: string): Promise<Preview> {
 	let cmd = `nsc expose kubernetes ${id} --namespace=${ns} --service=${service} --output json --wait`;
 
 	const port = core.getInput("port");
-	if (port != "") {
-		cmd = cmd + ` --port=${port}`;
+	if (port !== "") {
+		cmd = `${cmd} --port=${port}`;
 	}
 
 	const name = core.getInput("name");
-	if (name != "") {
-		cmd = cmd + ` --name=${name}`;
+	if (name !== "") {
+		cmd = `${cmd} --name=${name}`;
 	}
 
 	const ingress = core.getInput("ingress");
-	if (ingress != "") {
-		cmd = cmd + ` --ingress=${ingress}`;
+	if (ingress !== "") {
+		cmd = `${cmd} --ingress=${ingress}`;
 	}
 
 	const out = await exec.getExecOutput(cmd);
