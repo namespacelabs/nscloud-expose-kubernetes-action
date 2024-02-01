@@ -34,5 +34,5 @@ outputs:
     description: "Bearer token to access the exposed preview from HTTP."
 
 runs:
-  using: node16
+  using: node20
   main: dist/main/index.js
