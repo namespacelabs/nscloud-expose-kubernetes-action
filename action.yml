@@ -26,6 +26,10 @@ inputs:
     description: "Specify ingress rules. Separate each rule with `,`."
     required: false
     default: ""
+  wildcard:
+    description: "If set to 'true', expose the service load balancer under a wildcard ingress."
+    required: false
+    default: ""
 
 outputs:
   preview-url:

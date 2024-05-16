@@ -4445,6 +4445,9 @@ function exposeKubernetes(id) {
         if (ingress !== "") {
             cmd = `${cmd} --ingress=${ingress}`;
         }
+        if (_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("wildcard") === "true") {
+            cmd = `${cmd} --wildcard`;
+        }
         const out = yield _actions_exec__WEBPACK_IMPORTED_MODULE_3__.getExecOutput(cmd);
         return JSON.parse(out.stdout);
     });

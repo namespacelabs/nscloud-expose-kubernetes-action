@@ -107,6 +107,10 @@ async function exposeKubernetes(id: string): Promise<Preview> {
 		cmd = `${cmd} --ingress=${ingress}`;
 	}
 
+	if (core.getInput("wildcard") === "true") {
+		cmd = `${cmd} --wildcard`;
+	}
+
 	const out = await exec.getExecOutput(cmd);
 
 	return JSON.parse(out.stdout);
