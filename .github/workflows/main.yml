@@ -30,3 +30,31 @@ jobs:
           instance-id: ${{ steps.create-cluster.outputs.instance-id }}
           namespace: default
           service: nginx
+
+  with_wildcard:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, nscloud-ubuntu-22.04-amd64-2x8]
+    runs-on: ${{ matrix.os }}
+    name: Expose a sample application from Namespace Cloud
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: namespacelabs/nscloud-setup@v0
+      - name: Create Cluster
+        id: create-cluster
+        uses: namespacelabs/nscloud-cluster-action@v0
+        with:
+          ingress: wildcard
+      - name: Deploy NGINX
+        run: |
+          kubectl run nginx --image=nginx
+          kubectl expose pod nginx --type=LoadBalancer --port=80
+      - name: Expose application
+        uses: ./ # Uses an action in the root directory
+        with:
+          instance-id: ${{ steps.create-cluster.outputs.instance-id }}
+          namespace: default
+          service: nginx
+          wildcard: true
