@@ -37,7 +37,7 @@ jobs:
       matrix:
         os: [ubuntu-22.04, nscloud-ubuntu-22.04-amd64-2x8]
     runs-on: ${{ matrix.os }}
-    name: Expose a sample application from Namespace Cloud
+    name: Expose a sample application with wildcard from Namespace Cloud
     steps:
       - name: Checkout
         uses: actions/checkout@v3
