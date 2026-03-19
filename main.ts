@@ -9,7 +9,7 @@ async function run(): Promise<void> {
 	commandExists("nsc")
 		.then(prepareCluster)
 		.catch(() => {
-			core.setFailed(`Namespace Cloud CLI not found.
+		core.setFailed(`Namespace Cloud CLI not found.
 
 Please add a step this step to your workflow's job definition:
 
